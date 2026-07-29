@@ -1,0 +1,53 @@
+#include <hal/hal.h>
+#include <hal/interrupts.h>
+#include <hal/irq.h>
+
+#include <stdbool.h>
+
+#include <libfdt.h>
+#include <printf.h>
+
+#include "csr.h"
+#include "plic.h"
+#include "trap.h"
+
+static bool s_plic_present = false;
+
+void hal_init() {
+    printf("[hal] riscv hart %lu\n", (unsigned long)info->arch.riscv_hartid);
+
+    trap_init();
+    printf("[hal] traps initialized\n");
+
+    if (!info->fdt || fdt_check_header(info->fdt) != 0) {
+        printf("[hal] no usable FDT, interrupt controller unavailable\n");
+        return;
+    }
+
+    s_plic_present = plic_probe(info->fdt);
+    if (!s_plic_present)
+        printf("[hal] no PLIC found, IRQs will not be delivered\n");
+}
+
+void hal_irq_register_handler(uint32_t irq, hal_irq_handler_t handler) {
+    if (s_plic_present)
+        plic_register_handler(irq, handler);
+}
+
+void hal_irq_enable(uint32_t irq, uint32_t priority) {
+    if (s_plic_present)
+        plic_enable_irq(irq, priority);
+}
+
+void hal_enable_interrupts() {
+    csr_set_sstatus(CSR_SSTATUS_SIE);
+}
+
+void hal_wait_for_interrupt() {
+    asm volatile("wfi");
+}
+
+_Noreturn void hal_halt() {
+    for (;;)
+        hal_wait_for_interrupt();
+}
