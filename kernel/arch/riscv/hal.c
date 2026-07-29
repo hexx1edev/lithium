@@ -1,6 +1,7 @@
 #include <hal/hal.h>
 #include <hal/interrupts.h>
 #include <hal/irq.h>
+#include <hal/exceptions.h>
 
 #include <stdbool.h>
 
@@ -45,6 +46,10 @@ void hal_enable_interrupts() {
 
 void hal_wait_for_interrupt() {
     asm volatile("wfi");
+}
+
+void hal_set_memory_exception_handler(hal_memory_exception_handler handler) {
+    trap_set_memory_exception_handler(handler);
 }
 
 _Noreturn void hal_halt() {

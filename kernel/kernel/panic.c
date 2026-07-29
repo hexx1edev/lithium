@@ -10,5 +10,7 @@ _Noreturn void panic(const char* fmt, ...) {
     vprintf(fmt, args);
     va_end(args);
 
+    printf("kernel panic! system halted!\n");
+
     hal_halt();
 }

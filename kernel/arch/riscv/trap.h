@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <hal/exceptions.h>
 
 // Mirrors the register save layout in trap_entry.S exactly.
 struct trap_frame {
@@ -40,3 +41,4 @@ struct trap_frame {
 
 void trap_init();
 void trap_dispatch(struct trap_frame* tf);
+void trap_set_memory_exception_handler(hal_memory_exception_handler handler);

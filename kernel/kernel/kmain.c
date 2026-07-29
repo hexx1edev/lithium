@@ -5,7 +5,9 @@
 #include <drivers/probe/probe.h>
 #include <hal/hal.h>
 #include <hal/interrupts.h>
+#include <hal/exceptions.h>
 #include <kernel/boot_info.h>
+#include <kernel/exception.h>
 
 boot_info _boot_info = {};
 boot_info* info = NULL;
@@ -23,13 +25,16 @@ _Noreturn void kmain(const boot_info* _info) {
     printf("[kernel] initializing HAL\n");
     hal_init();
 
+    printf("[kernel] enabling interrupts and registering exception handlers\n");
+    hal_enable_interrupts();
+    hal_set_memory_exception_handler(exception_memory_error);
+
     printf("[kernel] probing drivers\n");
     drivers_probe();
 
-    printf("[kernel] enabling interrupts\n");
-    hal_enable_interrupts();
-
     printf("[kernel] init done\n");
+
+    *(uint8_t*)(0xFFFFFFFFFFFF) = 0;
 
     hal_halt();
 }
