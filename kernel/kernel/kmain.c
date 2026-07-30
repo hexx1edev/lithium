@@ -1,8 +1,8 @@
 #include <printf.h>
 #include <memory.h>
 
-#include <drivers/probe/early_probe.h>
-#include <drivers/probe/probe.h>
+#include <drivers/console_fdt_probe.h>
+#include <drivers/fdt_probe.h>
 #include <hal/hal.h>
 #include <hal/interrupts.h>
 #include <hal/exceptions.h>
@@ -16,11 +16,11 @@ _Noreturn void kmain(const boot_info* _info) {
     memcpy(&_boot_info, _info, sizeof(boot_info));
     info = &_boot_info;
 
-    // Nothing can be logged until a console is up, so this comes first.
-    if (!drivers_early_probe())
+    // nothing can be logged until a console is up, so this comes first.
+    if (!drivers_console_fdt_probe())
         hal_halt();
 
-    printf("[kernel] early console up, fdt at %p\n", info->fdt);
+    printf("[kernel] early console initialized, fdt at 0x%016llx\n", info->fdt);
 
     printf("[kernel] initializing HAL\n");
     hal_init();
@@ -30,11 +30,11 @@ _Noreturn void kmain(const boot_info* _info) {
     hal_set_memory_exception_handler(exception_memory_error);
 
     printf("[kernel] probing drivers\n");
-    drivers_probe();
+    drivers_fdt_probe();
 
     printf("[kernel] init done\n");
 
-    *(uint8_t*)(0xFFFFFFFFFFFF) = 0;
+    // *(uint8_t*)(0xFFFFFFFFFFFF) = 0;
 
     hal_halt();
 }
