@@ -14,6 +14,7 @@ export CC := clang
 export LD := clang
 export AR := llvm-ar
 export OBJCOPY := llvm-objcopy
+export STRIP := llvm-strip
 
 export CFLAGS := \
     $(ARCH_CFLAGS) \
@@ -21,7 +22,8 @@ export CFLAGS := \
     -ffreestanding \
     -fno-builtin \
     -I$(LIBK_DIR) \
-    -I$(LIBFDT_DIR)
+    -I$(LIBFDT_DIR) \
+    -Wall -Wextra -Werror   # better to use these flags sometimes
 
 export LDFLAGS := \
     $(ARCH_LDFLAGS) \

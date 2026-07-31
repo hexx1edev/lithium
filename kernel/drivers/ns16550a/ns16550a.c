@@ -36,7 +36,7 @@ bool ns16550a_init_console_fdt(void* fdt, int node) {
     return true;
 }
 
-bool ns16550a_init_fdt(void* fdt, int node) {
+bool ns16550a_init() {
     // we assume that console probe was done
 
     hal_irq_register_handler(irq, ns16550a_irq_handler);

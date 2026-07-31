@@ -2,7 +2,7 @@
 
 #include <libfdt.h>
 
-static uint64_t fdt_read_cells(const fdt32_t* cells, int n) {
+uint64_t fdt_read_cells(const fdt32_t* cells, int n) {
     uint64_t value = 0;
 
     for (int i = 0; i < n; i++)

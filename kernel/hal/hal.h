@@ -6,3 +6,5 @@
 
 void hal_init();
 _Noreturn void hal_halt();
+
+void hal_reserve_memory();

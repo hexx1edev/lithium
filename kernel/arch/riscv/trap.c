@@ -63,7 +63,7 @@ void trap_dispatch(struct trap_frame* tf) {
 
     uint64_t stval = csr_read_stval();
 
-    if (scause == 5 || scause == 7 && memoryExceptionHandler != NULL) {
+    if (scause == 5 || (scause == 7 && memoryExceptionHandler != NULL)) {
         memoryExceptionHandler(scause_to_string(scause), tf->sepc, stval);
         return;
     }
