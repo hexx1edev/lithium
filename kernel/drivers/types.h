@@ -21,4 +21,5 @@ typedef struct {
 typedef struct {
     device_t device;
     bool (*fdt_init)(void* fdt, int node);
+    void (*map_memory)();
 } driver_t;

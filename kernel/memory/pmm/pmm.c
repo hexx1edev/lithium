@@ -2,8 +2,10 @@
 #include <memory.h>
 #include <printf.h>
 #include <memory/memory_map.h>
+#include <kernel/memory.h>
 
 static uint8_t* bitmap = NULL;
+static uint64_t bitmap_size = 0;
 static uint64_t phys_base = 0;   // Physical RAM start address (e.g., 0x80000000)
 static uint64_t total_pages = 0;
 static uint64_t used_pages = 0;
@@ -56,7 +58,7 @@ void pmm_init(memory_map_t map, uint64_t bitmap_phys_addr) {
     // set RAM physical base from the first memory region
     phys_base = map.regions[0].start;
     total_pages = map.memory_size / PAGE_SIZE;
-    uint64_t bitmap_size = (total_pages + 7) / 8; // round up byte size
+    bitmap_size = (total_pages + 7) / 8; // round up byte size
 
     bitmap = (uint8_t*)bitmap_phys_addr;
 
@@ -74,6 +76,15 @@ void pmm_init(memory_map_t map, uint64_t bitmap_phys_addr) {
 
     printf("[pmm] initialized: %llu total pages, %llu free pages\n", 
            total_pages, total_pages - used_pages);
+}
+
+// The bitmap lives in raw physical memory right after the kernel image, not
+// in any statically-mapped section, but kernel_init_memory() maps the rest
+// of RAM (everything past the kernel image) before enabling the MMU, so by
+// the time this runs all that's left is repointing this to the high-half
+// alias of the same memory.
+void pmm_remap(void) {
+    bitmap = (uint8_t*)(uintptr_t)PA2VA((uint64_t)bitmap);
 }
 
 void pmm_reserve(uint64_t start, uint64_t size) {

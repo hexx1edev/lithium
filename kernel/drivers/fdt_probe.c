@@ -7,6 +7,9 @@
 #include <drivers/registry.h>
 #include <kernel/boot_info.h>
 
+// drivers_map_memory() already rewrote drivers[]'s pointer fields to their
+// high-half aliases before kernel_init_drivers() runs, so nothing here
+// needs to translate anything itself.
 static const driver_t* driver_for_node(const void* fdt, int node) {
     for (size_t i = 0; i < sizeof(drivers) / sizeof(drivers[0]); i++) {
         if (drivers[i].device.type == FDT_DEVICE && (fdt_node_check_compatible(fdt, node, drivers[i].device.fdt_compatible) == 0))

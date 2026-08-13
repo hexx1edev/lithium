@@ -4,7 +4,9 @@
 #include <printf.h>
 
 #include <hal/irq.h>
+#include <hal/mmu.h>
 #include <kernel/fdt_util.h>
+#include <kernel/memory.h>
 
 #define REG_THR 0 // Transmit Holding Register (write) / Receiver Buffer (read)
 #define REG_IER 1 // Interrupt Enable Register
@@ -16,6 +18,7 @@
 #define IRQ_PRIORITY 1
 
 static volatile uint8_t* base;
+static uint64_t mmio_size;
 static uint32_t irq;
 
 bool ns16550a_init_console_fdt(void* fdt, int node) {
@@ -31,12 +34,13 @@ bool ns16550a_init_console_fdt(void* fdt, int node) {
     }
 
     base = (volatile uint8_t*)(uintptr_t)addr;
+    mmio_size = size;
     printf("[ns16550a] base=0x%lx irq=%u\n", (unsigned long)addr, irq);
 
     return true;
 }
 
-bool ns16550a_init() {
+bool ns16550a_init_fdt() {
     // we assume that console probe was done
 
     hal_irq_register_handler(irq, ns16550a_irq_handler);
@@ -62,4 +66,14 @@ void ns16550a_irq_handler() {
     if (base[REG_LSR] & LSR_DATA_READY) {
         ns16550a_putc((char)base[REG_THR]);
     }
+}
+
+void ns16550a_remap() {
+    uint64_t phys = (uint64_t)(uintptr_t)base;
+
+    hal_mmu_map(PA2VA(phys), phys, mmio_size, PERM_MMIO);
+    base = (volatile uint8_t*)(uintptr_t)PA2VA(phys);
+
+    // re-register with new address
+    printf_set_callback(ns16550a_putc);
 }

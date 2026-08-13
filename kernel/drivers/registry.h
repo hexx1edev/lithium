@@ -3,10 +3,8 @@
 #include <drivers/types.h>
 #include <drivers/ns16550a/ns16550a.h>
 
-static const driver_t drivers[] = {
-    { {FDT_DEVICE, "ns16550a"}, ns16550a_init }
-};
+#define DRIVERS_COUNT 1
+#define CONSOLE_DRIVERS_COUNT 1
 
-static const console_driver_t console_drivers[] = {
-    { {FDT_DEVICE, "ns16550a"}, ns16550a_init_console_fdt, ns16550a_putc }
-};
+extern driver_t drivers[DRIVERS_COUNT];
+extern const console_driver_t console_drivers[CONSOLE_DRIVERS_COUNT];

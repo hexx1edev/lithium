@@ -21,6 +21,7 @@ export CFLAGS := \
     -nostdlib \
     -ffreestanding \
     -fno-builtin \
+    -fno-jump-tables \
     -I$(LIBK_DIR) \
     -I$(LIBFDT_DIR) \
     -Wall -Wextra -Werror   # better to use these flags sometimes

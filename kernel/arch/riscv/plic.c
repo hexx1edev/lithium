@@ -3,9 +3,11 @@
 #include <libfdt.h>
 #include <printf.h>
 
+#include <hal/mmu.h>
 #include <kernel/fdt_util.h>
+#include <kernel/memory.h>
 
-// Standard SiFive/RISC-V PLIC register layout.
+// SiFive layout
 #define PRIORITY_OFFSET 0x0
 #define ENABLE_OFFSET 0x2000
 #define ENABLE_CTX_STRIDE 0x80
@@ -14,9 +16,7 @@
 
 #define MAX_IRQ 96
 
-// This kernel only ever runs a single hart in S-mode, so the S-mode context
-// for hart 0 (context 1, per QEMU/SiFive's standard context numbering) is
-// hardcoded rather than parsed out of the "interrupts-extended" property.
+// temporary
 #define CONTEXT_HART0_S 1
 
 static volatile uint8_t* base;
@@ -47,7 +47,8 @@ bool plic_probe(const void* fdt) {
     if (!fdt_get_reg(fdt, node, &addr, &size))
         return false;
 
-    base = (volatile uint8_t*)(uintptr_t)addr;
+    hal_mmu_map(PA2VA(addr), addr, size, PERM_MMIO);
+    base = (volatile uint8_t*)(uintptr_t)PA2VA(addr);
 
     *threshold_reg(CONTEXT_HART0_S) = 0;
 

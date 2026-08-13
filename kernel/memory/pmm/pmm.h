@@ -12,6 +12,8 @@
 void pmm_init(memory_map_t map, uint64_t free_bitmap_addr);
 void pmm_mark_region(uint64_t start, uint64_t size, bool used);
 
+void pmm_remap(void);
+
 void pmm_reserve(uint64_t start, uint64_t size);
 void pmm_free_region(uint64_t start, uint64_t size);
 
