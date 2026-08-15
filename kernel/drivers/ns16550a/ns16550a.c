@@ -7,6 +7,7 @@
 #include <hal/mmu.h>
 #include <kernel/fdt_util.h>
 #include <kernel/memory.h>
+#include <memory/vmm/vmm.h>
 
 #define REG_THR 0 // Transmit Holding Register (write) / Receiver Buffer (read)
 #define REG_IER 1 // Interrupt Enable Register
@@ -71,7 +72,7 @@ void ns16550a_irq_handler() {
 void ns16550a_remap() {
     uint64_t phys = (uint64_t)(uintptr_t)base;
 
-    hal_mmu_map(PA2VA(phys), phys, mmio_size, PERM_MMIO);
+    vmm_map(phys, PA2VA(phys), mmio_size, PERM_MMIO);
     base = (volatile uint8_t*)(uintptr_t)PA2VA(phys);
 
     // re-register with new address

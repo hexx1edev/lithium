@@ -63,12 +63,12 @@ void trap_dispatch(struct trap_frame* tf) {
 
     uint64_t stval = csr_read_stval();
 
-    if (scause == 5 || (scause == 7 && memoryExceptionHandler != NULL)) {
+    if ((scause == 5 || scause == 7 || scause == 12 || scause == 13 || scause == 15) && memoryExceptionHandler != NULL) {
         memoryExceptionHandler(scause_to_string(scause), tf->sepc, stval);
         return;
     }
 
-    panic("[trap] unhandled exception scause=%lx sepc=%lx stval=%lx\n",
+    panic("[trap] unhandled exception scause=%ld sepc=%lx stval=%lx\n",
           (unsigned long)scause, (unsigned long)tf->sepc, (unsigned long)stval);
 }
 

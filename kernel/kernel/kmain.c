@@ -1,3 +1,4 @@
+#include <kernel/ramdisk.h>
 #include <kernel/init.h>
 #include <libfdt.h>
 
@@ -19,7 +20,7 @@ _Noreturn void kmain(const boot_info* _info) {
 
     kernel_init();
 
-    printf("[kernel] back to kmain!");
+    kernel_search_ramdisk();
 
     hal_halt();
 }

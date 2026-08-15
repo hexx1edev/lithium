@@ -2,3 +2,5 @@
 /.claude
 /build
 /compile_commands.json
+/dts.dts
+/rd.img

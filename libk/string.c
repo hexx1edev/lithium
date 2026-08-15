@@ -114,20 +114,18 @@ unsigned long strtoul(const char* nptr, char** endptr, int base) {
 	return (acc);
 }
 
-bool isalpha(char c) {
-    return strchr("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", c) != NULL;
-}
-
 bool isdigit(char c) {
-    return strchr("0123456789", c) != NULL;
-    
-    return false;
+    return c >= '0' && c <= '9';
 }
 
-bool isspace(char c) {
-    return c == ' ';
+bool isalpha(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
 bool isupper(char c) {
-    return strchr("ABCDEFGHIJKLMNOPQRSTUVWXYZ", c) != NULL;
+    return c >= 'A' && c <= 'Z';
+}
+
+bool isspace(char c) {
+    return c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r';
 }

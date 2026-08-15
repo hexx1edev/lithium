@@ -99,27 +99,18 @@ bool hal_mmu_map(uint64_t virtual, uint64_t physical, uint64_t size, hal_mmu_per
     return sv39_map(virtual, physical, size, perms);
 }
 
-// Walks the frame-pointer chain (ra at -8(fp), caller's fp at -16(fp))
-// starting at `frame`, adding `offset` to `frames` saved return addresses.
-// For use right before switching address spaces mid-execution: frames
-// already on the stack have saved return addresses pointing at code that's
-// about to become unreachable, so patch them in place so a later `ret`
-// through them still lands somewhere valid.
+// fixes frame return address and stack pointer
 void hal_fixup_call_frames(void* frame, int frames, uint64_t offset) {
     uint64_t* fp = (uint64_t*)frame;
     for (int i = 0; i < frames && fp; i++) {
-        fp[-1] += offset;         // saved ra
-        fp = (uint64_t*)fp[-2];   // caller's saved fp
+        fp[-1] += offset;                    // saved ra
+        uint64_t* caller_fp = (uint64_t*)fp[-2]; // caller's saved fp, still physical
+        fp[-2] += offset;                    // caller's s0 should be virtual
+        fp = caller_fp;
     }
 }
 
 void hal_mmu_enable(int extra_caller_frames) {
     printf("[riscv] enabling Sv39 MMU\n");
     sv39_enable(extra_caller_frames);
-}
-
-void hal_update_stack() {
-    uint64_t stack_top = (uint64_t)_stack_top;
-
-    asm volatile("mv sp, %0" :: "r"(PA2VA(stack_top))); 
 }

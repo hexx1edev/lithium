@@ -10,6 +10,8 @@ export LIBK_DIR := $(PROJECT_ROOT)libk
 export LIBFDT_DIR := $(PROJECT_ROOT)libfdt
 export KERNEL_DIR := $(PROJECT_ROOT)kernel
 
+export RAMDISK_DIR := $(PROJECT_ROOT)ramdisk
+
 export CC := clang
 export LD := clang
 export AR := llvm-ar

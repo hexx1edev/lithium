@@ -39,7 +39,7 @@ SECTIONS {
     __bss_start = .;
     .bss : {
         *(.bss*)
-        *(.sbss*) /* cland adds this sections sometimes */
+        *(.sbss*) /* clang adds this sections sometimes */
         *(.scommon*)
         *(COMMON)
     }

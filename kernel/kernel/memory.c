@@ -101,13 +101,6 @@ void kernel_init_memory() {
         PERM_KERNEL_DATA
     );
 
-    // PA2VA() is a flat, constant offset over the whole physical address
-    // space, not just the kernel image - so once the switch happens,
-    // anything that turns a physical pointer from the allocator (the pmm
-    // bitmap, freshly allocated page-table pages, future heap pages, ...)
-    // into a usable one via PA2VA() needs that page to actually be mapped.
-    // Cover the rest of RAM here so walk() can keep allocating and
-    // touching new page-table pages after the switch.
     uint64_t ram_start = mem_map.regions[0].start;
     uint64_t ram_end = ram_start + mem_map.memory_size;
 
@@ -118,10 +111,6 @@ void kernel_init_memory() {
         hal_mmu_map(PA2VA(kernel_end), kernel_end, ram_end - kernel_end, PERM_KERNEL_DATA);
     }
 
-    // Everything else only exists at its high-half alias, but the code that
-    // performs the satp switch is still executing from its physical address
-    // the instant translation turns on, so that one page needs a temporary
-    // identity mapping to survive the transition.
     uint64_t trampoline_start = (uint64_t)__trampoline_start;
     uint64_t trampoline_end = (uint64_t)__trampoline_end;
 
@@ -132,24 +121,13 @@ void kernel_init_memory() {
         PERM_KERNEL_CODE
     );
 
-    // 2 extra frames: this function's own, and kernel_init()'s above it -
-    // so kernel_init() can return to kmain() normally instead of having to
-    // halt the CPU itself.
     hal_mmu_enable(2);
 
-    // `info` was set to &_boot_info back in kmain(), before any of this
-    // ran, so it's still holding that physical address - fix it in place
-    // so every later `info->...` read (here and in every other file) sees
-    // the high-half alias instead. Its fdt field is the raw physical
-    // pointer firmware handed us at boot and needs the same treatment.
     info = (boot_info*)(uintptr_t)PA2VA((uint64_t)info);
     info->fdt = (const void*)(uintptr_t)PA2VA((uint64_t)info->fdt);
 
-    // The pmm bitmap isn't mapped anywhere yet, and any further mapping
-    // (including the driver MMIO below) needs a working allocator.
     pmm_remap();
 
-    // MMIO isn't mapped anywhere yet; drivers map/repoint their own
-    // registers to their high-half alias now that the switch is done.
+    // tell drivers to map their MMIO
     drivers_map_memory();
 }
