@@ -9,6 +9,9 @@ typedef struct {
 typedef struct {
     arch_boot_info arch;
     const void* fdt;
+    const void* ramdisk_start;
+    const void* ramdisk_end;
+    const uint64_t load_addr;
 } boot_info;
 
 extern boot_info* info;

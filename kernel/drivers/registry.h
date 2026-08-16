@@ -7,4 +7,4 @@
 #define CONSOLE_DRIVERS_COUNT 1
 
 extern driver_t drivers[DRIVERS_COUNT];
-extern const console_driver_t console_drivers[CONSOLE_DRIVERS_COUNT];
+extern console_driver_t console_drivers[CONSOLE_DRIVERS_COUNT];

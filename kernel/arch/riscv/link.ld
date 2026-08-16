@@ -1,7 +1,7 @@
 ENTRY(_header)
 
 SECTIONS {
-    . = 0x80200000;
+    . = 0x0;
 
     __kernel_start = .;
 

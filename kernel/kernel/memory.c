@@ -43,14 +43,21 @@ void kernel_init_memory() {
     printf("[kernel] initializing pmm\n");
     pmm_init(mem_map, kernel_end);
 
-    printf("[kernel] reserving kernel memory\n");
-    pmm_reserve(kernel_start, kernel_end - kernel_start);
+    uint64_t ram_start = mem_map.regions[0].start;
+    printf("[kernel] reserving pre-kernel and kernel memory\n");
+    pmm_reserve(ram_start, kernel_end - ram_start);
 
     printf("[kernel] reserving FDT memory\n");
     uint32_t fdt_size = fdt_totalsize((void*)info->fdt);
     pmm_reserve((uint64_t)info->fdt, fdt_size);
 
-    hal_reserve_memory();
+    printf("[kernel] reserving firmware memory regions\n");
+    int num_rsv = fdt_num_mem_rsv((void*)info->fdt);
+    for (int i = 0; i < num_rsv; i++) {
+        uint64_t rsv_addr, rsv_size;
+        if (fdt_get_mem_rsv((void*)info->fdt, i, &rsv_addr, &rsv_size) == 0)
+            pmm_reserve(rsv_addr, rsv_size);
+    }
 
     printf("[kernel] initializing MMU\n");
     hal_mmu_init();
@@ -102,7 +109,6 @@ void kernel_init_memory() {
         PERM_KERNEL_DATA
     );
 
-    uint64_t ram_start = mem_map.regions[0].start;
     uint64_t ram_end = ram_start + mem_map.memory_size;
 
     if (kernel_start > ram_start) {

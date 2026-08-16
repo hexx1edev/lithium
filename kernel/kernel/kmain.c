@@ -7,17 +7,25 @@
 #include <kernel/boot_info.h>
 
 #include <hal/hal.h>
+#include <drivers/remap.h>
 
 boot_info _boot_info = {};
 boot_info* info = NULL;
+
+extern char __kernel_start[];
+extern char __kernel_end[];
 
 _Noreturn void kmain(const boot_info* _info) {
     memcpy(&_boot_info, _info, sizeof(boot_info));
     info = &_boot_info;
 
+    drivers_relocate(info->load_addr);
+
     kernel_init_tty();
 
     printf("\nWelcome to lithium!\n\n");
+
+    printf("[kernel] loaded at address 0x%llx\n", info->load_addr);
 
     kernel_init();
 

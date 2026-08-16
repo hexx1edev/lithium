@@ -4,6 +4,7 @@
 #include <memory/pmm/pmm.h>
 #include <memory.h>
 #include <hal/mmu.h>
+#include <printf.h>
 
 #define VPN_MASK 0x1FFUL
 
@@ -51,6 +52,7 @@ static pte_t* walk(uint64_t virtual, int alloc) {
 
 void sv39_init() {
     root = pmm_alloc_page();
+
     if (!root) panic("[sv39] failed to allocate page for root table!\n");
     memset(root, 0, 4096);
 }
@@ -77,8 +79,8 @@ bool sv39_map(uint64_t virtual, uint64_t physical, uint64_t size, uint64_t permi
 extern void sv39_switch(uint64_t satp_value, uint64_t va_offset);
 
 void sv39_enable(int extra_caller_frames) {
-    // sv39_enable's own frame + hal_mmu_enable's frame are always fixed;
-    // extra_caller_frames covers however many more the caller wants.
+    // sv39_enable's own frame + hal_mmu_enable's frame are always fixed
+    // extra_caller_frames covers however many more the caller wants
     hal_fixup_call_frames(__builtin_frame_address(0), 2 + extra_caller_frames, KERNEL_VA_HIGHHALF_BASE);
 
     mmu_enabled = true;

@@ -4,7 +4,7 @@
 
 _Noreturn void kmain(const boot_info* info);
 
-_Noreturn void arch_entry(uint64_t hartid, void* fdt) {
+_Noreturn void arch_entry(uint64_t hartid, void* fdt, void* ramdisk_start, void* ramdisk_end, uint64_t load_addr) {
     arch_boot_info archInfo = {
         .riscv_hartid = hartid
     };
@@ -12,6 +12,9 @@ _Noreturn void arch_entry(uint64_t hartid, void* fdt) {
     boot_info info = {
         .arch = archInfo,
         .fdt = fdt,
+        .ramdisk_start = ramdisk_start,
+        .ramdisk_end = ramdisk_end,
+        .load_addr = load_addr
     };
 
     kmain(&info);

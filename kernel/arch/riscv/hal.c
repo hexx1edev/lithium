@@ -3,7 +3,6 @@
 #include <hal/irq.h>
 #include <hal/exceptions.h>
 #include <hal/mmu.h>
-#include <memory/pmm/pmm.h>
 #include <kernel/memory.h>
 
 #include <stdbool.h>
@@ -61,11 +60,6 @@ void hal_set_memory_exception_handler(hal_memory_exception_handler handler) {
 _Noreturn void hal_halt() {
     for (;;)
         hal_wait_for_interrupt();
-}
-
-void hal_reserve_memory() {
-    printf("[riscv] reserving OpenSBI memory region\n");
-    pmm_reserve(0x80000000, 0x200000);
 }
 
 void hal_mmu_init() {
