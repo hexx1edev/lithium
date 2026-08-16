@@ -1,5 +1,6 @@
 #include <kernel/ramdisk.h>
 #include <kernel/init.h>
+#include <kernel/memory.h>
 #include <libfdt.h>
 
 #include <printf.h>

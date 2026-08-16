@@ -72,7 +72,7 @@ void ns16550a_irq_handler() {
 void ns16550a_remap() {
     uint64_t phys = (uint64_t)(uintptr_t)base;
 
-    vmm_map(phys, PA2VA(phys), mmio_size, PERM_MMIO);
+    vmm_map(PA2VA(phys), phys, mmio_size, PERM_MMIO);
     base = (volatile uint8_t*)(uintptr_t)PA2VA(phys);
 
     // re-register with new address

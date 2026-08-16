@@ -48,7 +48,7 @@ bool plic_probe(const void* fdt) {
     if (!fdt_get_reg(fdt, node, &addr, &size))
         return false;
 
-    vmm_map(addr, PA2VA(addr), size, PERM_MMIO);
+    vmm_map(PA2VA(addr), addr, size, PERM_MMIO);
     base = (volatile uint8_t*)(uintptr_t)PA2VA(addr);
 
     *threshold_reg(CONTEXT_HART0_S) = 0;

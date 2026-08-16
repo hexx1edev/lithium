@@ -2,6 +2,7 @@
 #include <memory/memory_map.h>
 #include <memory/parse_fdt.h>
 #include <memory/pmm/pmm.h>
+#include <memory/vmm/vmm.h>
 #include <printf.h>
 #include <memory.h>
 #include <stdint.h>
@@ -66,35 +67,35 @@ void kernel_init_memory() {
     uint64_t stack_top = (uint64_t)_stack_top;
     uint64_t stack_bottom = (uint64_t)_stack_bottom;
 
-    hal_mmu_map(
+    vmm_map(
         PA2VA(text_start),
         text_start,
         text_end - text_start,
         PERM_KERNEL_CODE
     );
 
-    hal_mmu_map(
+    vmm_map(
         PA2VA(data_start),
         data_start,
         data_end - data_start,
         PERM_KERNEL_DATA
     );
     
-    hal_mmu_map(
+    vmm_map(
         PA2VA(rodata_start),
         rodata_start,
         rodata_end - rodata_start,
         PERM_KERNEL_RODATA
     );
 
-    hal_mmu_map(
+    vmm_map(
         PA2VA(bss_start),
         bss_start,
         bss_end - bss_start,
         PERM_KERNEL_DATA
     );
 
-    hal_mmu_map(
+    vmm_map(
         PA2VA(stack_bottom),
         stack_bottom,
         stack_top - stack_bottom,
@@ -105,16 +106,16 @@ void kernel_init_memory() {
     uint64_t ram_end = ram_start + mem_map.memory_size;
 
     if (kernel_start > ram_start) {
-        hal_mmu_map(PA2VA(ram_start), ram_start, kernel_start - ram_start, PERM_KERNEL_DATA);
+        vmm_map(PA2VA(ram_start), ram_start, kernel_start - ram_start, PERM_KERNEL_DATA);
     }
     if (ram_end > kernel_end) {
-        hal_mmu_map(PA2VA(kernel_end), kernel_end, ram_end - kernel_end, PERM_KERNEL_DATA);
+        vmm_map(PA2VA(kernel_end), kernel_end, ram_end - kernel_end, PERM_KERNEL_DATA);
     }
 
     uint64_t trampoline_start = (uint64_t)__trampoline_start;
     uint64_t trampoline_end = (uint64_t)__trampoline_end;
 
-    hal_mmu_map(
+    vmm_map(
         trampoline_start,
         trampoline_start,
         trampoline_end - trampoline_start,

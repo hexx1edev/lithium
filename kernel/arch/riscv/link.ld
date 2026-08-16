@@ -1,4 +1,4 @@
-ENTRY(_start)
+ENTRY(_header)
 
 SECTIONS {
     . = 0x80200000;

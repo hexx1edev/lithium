@@ -44,12 +44,12 @@ Before build, you can set target architecture in `config.mk` by setting ARCH var
 
 - riscv
 
-Install `clang, LLVM tools, make`, run `make` to build project.
+Install `riscv64-unknown-elf-gcc and binutils, make, cpio`, run `make all` to build project.
 
 ## Testing
 
 You can run riscv-built kernel in QEMU using  
-`qemu-system-riscv64 -M virt -m 512M -nographic -bios default -kernel build/kernel.elf`.  
+`qemu-system-riscv64 -M virt -m 512M -nographic -bios default -kernel build/kernel.elf -initrd rd.img`.  
 Feel free to add any device, that kernel supports, here's list of supported devices:
 
 - UART NS16500A char dev (enabled in QEMU)

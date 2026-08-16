@@ -12,12 +12,6 @@ export KERNEL_DIR := $(PROJECT_ROOT)kernel
 
 export RAMDISK_DIR := $(PROJECT_ROOT)ramdisk
 
-export CC := clang
-export LD := clang
-export AR := llvm-ar
-export OBJCOPY := llvm-objcopy
-export STRIP := llvm-strip
-
 export CFLAGS := \
     $(ARCH_CFLAGS) \
     -nostdlib \

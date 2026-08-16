@@ -79,7 +79,7 @@ bool cpio_parse_fdt(void* fdt) {
     printf("[cpio] found ramdisk at 0x%llx\n", start);
 
     // map ramdisk in memory
-    vmm_map(start, PA2VA(start), end - start, PERM_MMIO);
+    vmm_map(PA2VA(start), start, end - start, PERM_MMIO);
 
     cpio_t probably_cpio = {
         (cpio_header_t*)PA2VA(start),
