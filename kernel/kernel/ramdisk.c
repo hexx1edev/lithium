@@ -1,6 +1,6 @@
 #include "ramdisk.h"
 #include <printf.h>
-#include <memory/ramdisk/cpio.h>
+#include <kernel/memory/ramdisk/cpio.h>
 #include <kernel/boot_info.h>
 #include <kernel/panic.h>
 

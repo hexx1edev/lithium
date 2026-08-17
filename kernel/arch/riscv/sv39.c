@@ -1,7 +1,7 @@
 #include "sv39.h"
 #include <kernel/panic.h>
 #include <kernel/memory.h>
-#include <memory/pmm/pmm.h>
+#include <kernel/memory/pmm/pmm.h>
 #include <memory.h>
 #include <hal/mmu.h>
 #include <printf.h>

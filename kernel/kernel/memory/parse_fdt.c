@@ -1,5 +1,5 @@
 #include "parse_fdt.h"
-#include <memory/memory_map.h>
+#include <kernel/memory/memory_map.h>
 #include <libfdt.h>
 #include <kernel/fdt_util.h>
 #include <printf.h>

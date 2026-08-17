@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <memory/memory_map.h>
+#include <kernel/memory/memory_map.h>
 
 #define PAGE_SIZE 4096
 #define PAGE_ALIGN_DOWN(x) ((x) & ~(PAGE_SIZE - 1))

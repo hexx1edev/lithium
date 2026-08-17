@@ -1,7 +1,7 @@
 #include "pmm.h"
 #include <memory.h>
 #include <printf.h>
-#include <memory/memory_map.h>
+#include <kernel/memory/memory_map.h>
 #include <kernel/memory.h>
 
 static uint8_t* bitmap = NULL;

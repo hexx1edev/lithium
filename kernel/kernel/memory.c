@@ -1,8 +1,8 @@
 #include "memory.h"
-#include <memory/memory_map.h>
-#include <memory/parse_fdt.h>
-#include <memory/pmm/pmm.h>
-#include <memory/vmm/vmm.h>
+#include <kernel/memory/memory_map.h>
+#include <kernel/memory/parse_fdt.h>
+#include <kernel/memory/pmm/pmm.h>
+#include <kernel/memory/vmm/vmm.h>
 #include <printf.h>
 #include <memory.h>
 #include <stdint.h>
