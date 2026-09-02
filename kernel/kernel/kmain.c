@@ -1,3 +1,5 @@
+#include "kernel/memory/ramdisk/cpio.h"
+#include "kernel/panic.h"
 #include <kernel/ramdisk.h>
 #include <kernel/init.h>
 #include <kernel/memory.h>
@@ -30,6 +32,16 @@ _Noreturn void kmain(const boot_info* _info) {
     kernel_init();
 
     kernel_search_ramdisk();
+
+    cpio_handle_t init = cpio_lookup("init");
+
+    if (init.ptr == NULL) {
+        init = cpio_lookup("bin/init");
+        if (init.ptr == NULL)
+            panic("[kernel] no init executable found in ramdisk\n");
+    }
+
+    printf("[kernel] running init\n");
 
     hal_halt();
 }

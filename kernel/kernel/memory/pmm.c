@@ -78,11 +78,6 @@ void pmm_init(memory_map_t map, uint64_t bitmap_phys_addr) {
            total_pages, total_pages - used_pages);
 }
 
-// The bitmap lives in raw physical memory right after the kernel image, not
-// in any statically-mapped section, but kernel_init_memory() maps the rest
-// of RAM (everything past the kernel image) before enabling the MMU, so by
-// the time this runs all that's left is repointing this to the high-half
-// alias of the same memory.
 void pmm_remap(void) {
     bitmap = (uint8_t*)(uintptr_t)PA2VA((uint64_t)bitmap);
 }

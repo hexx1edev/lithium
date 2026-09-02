@@ -4,7 +4,7 @@
 #include <printf.h>
 #include <hal/mmu.h>
 #include <kernel/memory.h>
-#include <kernel/memory/vmm/vmm.h>
+#include <kernel/memory/vmm.h>
 
 typedef struct {
     char magic[6];      // "070701"

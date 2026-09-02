@@ -3,11 +3,12 @@
 #include <libfdt.h>
 #include <printf.h>
 
+#include <drivers/console/console.h>
 #include <hal/irq.h>
 #include <hal/mmu.h>
 #include <kernel/fdt_util.h>
 #include <kernel/memory.h>
-#include <kernel/memory/vmm/vmm.h>
+#include <kernel/memory/vmm.h>
 
 #define REG_THR 0 // Transmit Holding Register (write) / Receiver Buffer (read)
 #define REG_IER 1 // Interrupt Enable Register
@@ -76,5 +77,5 @@ void ns16550a_remap() {
     base = (volatile uint8_t*)(uintptr_t)PA2VA(phys);
 
     // re-register with new address
-    printf_set_callback(ns16550a_putc);
+    printf_set_callback(console_putc);
 }

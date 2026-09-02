@@ -1,8 +1,8 @@
 #include "memory.h"
 #include <kernel/memory/memory_map.h>
 #include <kernel/memory/parse_fdt.h>
-#include <kernel/memory/pmm/pmm.h>
-#include <kernel/memory/vmm/vmm.h>
+#include <kernel/memory/pmm.h>
+#include <kernel/memory/vmm.h>
 #include <printf.h>
 #include <memory.h>
 #include <stdint.h>
@@ -14,6 +14,7 @@
 
 #include <kernel/arch.h>
 #include <drivers/remap.h>
+#include <drivers/console/console.h>
 
 extern char __kernel_start[];
 extern char __kernel_end[];
@@ -132,6 +133,8 @@ void kernel_init_memory() {
 
     info = (boot_info*)(uintptr_t)PA2VA((uint64_t)info);
     info->fdt = (const void*)(uintptr_t)PA2VA((uint64_t)info->fdt);
+
+    console_remap();
 
     pmm_remap();
 

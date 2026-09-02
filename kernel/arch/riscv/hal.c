@@ -93,6 +93,14 @@ bool hal_mmu_map(uint64_t virtual, uint64_t physical, uint64_t size, hal_mmu_per
     return sv39_map(virtual, physical, size, perms);
 }
 
+void hal_mmu_unmap(uint64_t virtual, uint64_t size) {
+    sv39_unmap(virtual, size);
+}
+
+uint64_t hal_mmu_virt_to_phys(uint64_t virtual) {
+    return sv39_virt_to_phys(virtual);
+}
+
 // fixes frame return address and stack pointer
 void hal_fixup_call_frames(void* frame, int frames, uint64_t offset) {
     uint64_t* fp = (uint64_t*)frame;

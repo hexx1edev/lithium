@@ -48,8 +48,8 @@ Install `riscv64-unknown-elf-gcc and binutils, make, cpio`, run `make all` to bu
 
 ## Testing
 
-You can run riscv-built kernel in QEMU using  
-`qemu-system-riscv64 -M virt -m 512M -nographic -bios default -kernel build/kernel.elf -initrd rd.img`.  
+You can run the riscv-built kernel in QEMU using `./qemu_riscv.sh`, which runs  
+`qemu-system-riscv64 -M virt -m 512M -nographic -bios default -kernel build/kernel.bin -initrd build/rd.img`.  
 Feel free to add any device, that kernel supports, here's list of supported devices:
 
 - UART NS16500A char dev (enabled in QEMU)

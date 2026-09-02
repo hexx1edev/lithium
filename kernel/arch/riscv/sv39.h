@@ -23,4 +23,6 @@ typedef pte_t* pagetable_t;
 
 void sv39_init();
 bool sv39_map(uint64_t virtual, uint64_t physical, uint64_t size, uint64_t permissions);
+void sv39_unmap(uint64_t virtual, uint64_t size);
 void sv39_enable(int extra_caller_frames);
+uint64_t sv39_virt_to_phys(uint64_t virtual);

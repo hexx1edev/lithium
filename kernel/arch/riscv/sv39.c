@@ -1,7 +1,7 @@
 #include "sv39.h"
 #include <kernel/panic.h>
 #include <kernel/memory.h>
-#include <kernel/memory/pmm/pmm.h>
+#include <kernel/memory/pmm.h>
 #include <memory.h>
 #include <hal/mmu.h>
 #include <printf.h>
@@ -57,6 +57,12 @@ void sv39_init() {
     memset(root, 0, 4096);
 }
 
+uint64_t sv39_virt_to_phys(uint64_t virtual) {
+    pte_t* pte = walk(virtual, 0);
+
+    return PTE2PA(*pte);
+}
+
 bool sv39_map(uint64_t virtual, uint64_t physical, uint64_t size, uint64_t permissions) {
     if (size == 0) return false;
 
@@ -74,6 +80,23 @@ bool sv39_map(uint64_t virtual, uint64_t physical, uint64_t size, uint64_t permi
         if (a == va_end) break;
     }
     return true;
+}
+
+void sv39_unmap(uint64_t virtual, uint64_t size) {
+    if (size == 0) return;
+
+    uint64_t va_start = virtual & ~(PAGE_SIZE - 1);
+    uint64_t va_end = (virtual + size - 1) & ~(PAGE_SIZE - 1);
+
+    for (uint64_t a = va_start; a < va_end; a += PAGE_SIZE) {
+        pte_t* pte = walk(a, 1);
+        if (!pte) return;
+        if (*pte & PTE_V) return; // already mapped - error!
+
+        *pte &= ~PTE_V;
+
+        if (a == va_end) break;
+    }
 }
 
 extern void sv39_switch(uint64_t satp_value, uint64_t va_offset);

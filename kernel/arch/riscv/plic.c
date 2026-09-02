@@ -6,7 +6,7 @@
 #include <hal/mmu.h>
 #include <kernel/fdt_util.h>
 #include <kernel/memory.h>
-#include <kernel/memory/vmm/vmm.h>
+#include <kernel/memory/vmm.h>
 
 // SiFive layout
 #define PRIORITY_OFFSET 0x0

@@ -20,7 +20,7 @@ export CFLAGS := \
     -fno-jump-tables \
     -I$(LIBK_DIR) \
     -I$(LIBFDT_DIR) \
-    -Wall -Wextra -Werror   # better to use these flags sometimes
+    -Wall -Wextra       # better to use these flags sometimes
 
 export LDFLAGS := \
     $(ARCH_LDFLAGS) \

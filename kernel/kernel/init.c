@@ -1,6 +1,7 @@
 #include <kernel/drivers.h>
 #include <kernel/memory.h>
 #include <drivers/fdt_probe.h>
+#include <drivers/console/probe.h>
 #include <hal/hal.h>
 #include <hal/interrupts.h>
 #include <hal/exceptions.h>

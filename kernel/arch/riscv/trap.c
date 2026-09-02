@@ -6,12 +6,15 @@
 #include "csr.h"
 #include "plic.h"
 #include <kernel/panic.h>
+#include <kernel/syscalls/handler.h>
 
 extern void trap_entry();
 
 #define SCAUSE_INTERRUPT_BIT (1UL << 63)
 #define SCAUSE_CODE_MASK (~SCAUSE_INTERRUPT_BIT)
 #define IRQ_SUPERVISOR_EXTERNAL 9
+#define SCAUSE_ECALL_FROM_U 8
+#define ECALL_INSN_SIZE 4
 
 hal_memory_exception_handler memoryExceptionHandler = NULL;
 
@@ -58,6 +61,12 @@ void trap_dispatch(struct trap_frame* tf) {
         else
             printf("[trap] unexpected interrupt, scause=%lx\n", (unsigned long)scause);
 
+        return;
+    }
+
+    if (code == SCAUSE_ECALL_FROM_U) {
+        syscall_handler((int)tf->a7, tf->a0, tf->a1, tf->a2, tf->a3);
+        tf->sepc += ECALL_INSN_SIZE;
         return;
     }
 

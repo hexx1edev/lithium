@@ -1,6 +1,6 @@
 include config.mk
 
-.PHONY: all libk libfdt kernel ramdisk clean
+.PHONY: all libk libfdt kernel init ramdisk clean
 
 all: kernel ramdisk
 
@@ -16,9 +16,15 @@ kernel: libk libfdt
 	@echo "--> Building $@"
 	@$(MAKE) -C kernel
 
-ramdisk:
+init:
+	@echo "--> Building $@"
+	@$(MAKE) -C init
+
+ramdisk: init
 	@echo "--> Creating ramdisk"
-	@cd $(RAMDISK_DIR) && find . -print0 | cpio --null -o -H newc > $(PROJECT_ROOT)rd.img
+	@mkdir -p $(BUILD_DIR)/ramdisk
+	@cp -r $(RAMDISK_DIR)/. $(BUILD_DIR)/ramdisk/
+	@cd $(BUILD_DIR)/ramdisk && find . -print0 | cpio --null -o -H newc > $(BUILD_DIR)/rd.img
 
 clean:
 	@echo "--> Cleaning up"
